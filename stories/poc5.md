@@ -85,13 +85,13 @@ graph BT
     style basement fill:#3a1a1a,stroke:#8a4a4a,color:#fff
 ```
 
-### What the Ogre can do
+### What the RE team can do
 
 - Study read-only mounts of the original code, original output, and RE output
 - Read and write to PostgreSQL control tables (job configs, task queues, results)
 - Write reverse-engineered job configurations and external modules (symlinked up to the host)
 
-### What the Ogre cannot do
+### What the RE team cannot do
 
 - Execute the Mock ETL Framework
 - Execute Proofmark
@@ -110,10 +110,10 @@ When an agent queues a Proofmark comparison, it uses an `{ETL_ROOT}` path token.
 |---|---|
 | Modified original job code | Originals live on the host. The basement gets a read-only mount. |
 | Modified original output | OG output lives on the host. The basement gets a read-only mount. Proofmark resolves paths on the host side. |
-| Modified the ETL Framework | Framework service runs on the host. The Ogre can't execute or modify it. |
-| Modified Proofmark | Proofmark service runs on the host. The Ogre can't execute or modify it. |
-| Cherry-picked the wrong result | Proofmark runs on the host and writes results to PostgreSQL. The Ogre reads results but doesn't control which comparison applies to which job. |
-| Copied OG output as their own | RE output lives on the host — only the ETL Framework service writes there. The Ogre gets a read-only mount. |
+| Modified the ETL Framework | Framework service runs on the host. The RE team can't execute or modify it. |
+| Modified Proofmark | Proofmark service runs on the host. The RE team can't execute or modify it. |
+| Cherry-picked the wrong result | Proofmark runs on the host and writes results to PostgreSQL. The RE team reads results but doesn't control which comparison applies to which job. |
+| Copied OG output as their own | RE output lives on the host — only the ETL Framework service writes there. The RE team gets a read-only mount. |
 
 ---
 
