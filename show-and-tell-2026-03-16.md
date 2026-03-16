@@ -1,125 +1,86 @@
-# What I Built with Claude
+# I, Claudius — the story of a boy and his bot(s)
 
-Everything on this page was built in collaboration with Claude — Anthropic's AI.
-No team. No budget. Just one developer and a conversation window.
+This is the story of what I've been up to using Claude Code on my home PC. This journey covers the entirety of my experience with the tool. One month (so far). That's it. One developer, several concurrent terminal sessions, and an Anthropic billing plan that keeps ballooning out of control.
 
-**~34,000 lines of application code. ~49,000 lines of strategy documentation. 500+ tests. 6 proof-of-concept iterations. 5 applications. 3 autonomous agents. 1 game.**
+- ~34,000 lines of application code
+- ~49,000 lines of strategy documentation
+- 500+ tests
+- 224 git commits
+- 6 full ATC proof-of-concept iterations
+- 5 applications
+- 2 active OpenClaw autonomous agents (with plans already laid for 9 in total)
+- Full design docs for a low-poly 3D puzzle game
 
-All of it built since Valentine's Day weekend 2026.
+All since Valentine's Day weekend 2026.
 
 ---
 
-## The Professional Work
+## Air Traffic Control POCs — the Reverse-Engineering Programme
+
+The goal is to prove out that we can change the paradigm away from humans as pilots with LLM as co-pilots and towards humans as Air Traffic Control (ATC). Our arena is a mock-up of an enterprise ETL platform running over 100 ETL jobs with 2,000 customers' worth of mock banking data across an entire quarter-year. The jobs were intentionally built *poorly*. Our challenge is to infer business requirements from existing code and data, build better code with full documentation, and demonstrate with irrefutable evidence that our reverse-engineered ETL jobs are better than their originals.
+
+Without human intervention.
+
+[Read the details.](stories/atc-reverse-engineering.md)
+
+## Full application build-out to support the ATC POCs
 
 ### Mock ETL Framework
 
-A from-scratch replica of our production ETL platform. Built to prove that an AI agent could understand, reverse-engineer, and rewrite real ETL jobs — without ever seeing the production codebase.
+A from-scratch replica of an enterprise ETL platform. Originally written in C#, then ported to Python, its capabilities include:
 
-Written first in C#. Then ported entirely to Python.
+- Job dispatching from a PostgreSQL queue
+- JSON job configurations represented as modular tasks to execute, including data sourcing, transformation, Parquet output, CSV output (vanilla and with trailing records), and support for dynamically loaded external modules
+- Shared DataFrame state between execution modules
+- Append and overwrite output modes
+- Ability to queue multiple ETL date ranges at once
 
-| | C# | Python |
-|---|---|---|
-| Lines of code | 12,080 | 10,080 |
-| Source files | 109 | 104 |
-| Unit tests | 156 | 158 |
-| Job configurations | 110 | 103 |
-| External modules | — | 73 |
-| Documentation markdowns | 20 | 20 |
-
-**Capabilities:** Job dispatching from a PostgreSQL queue. Modular task pipelines. Dynamically loaded external modules. Data sourcing, transformation, Parquet output, CSV output (vanilla and with trailing records). Shared DataFrame state between execution modules. Append and overwrite output modes.
-
-[MockEtlFramework (C#)](https://github.com/danielpmcconkey/MockEtlFramework) ・ [MockEtlFrameworkPython](https://github.com/danielpmcconkey/MockEtlFrameworkPython)
-
----
+[Read the details.](stories/mock-etl-framework.md)
 
 ### Proofmark
 
-An independent output equivalence engine. Given two sets of files — CSV or Parquet — it determines whether they're functionally identical.
+An independent output equivalence engine. Given two sets of files — CSV or Parquet — it determines whether they're functionally identical. The name comes from proof marks on firearms: the stamp from an independent proof house certifying that a weapon has been pressure-tested. The proof house doesn't care who built the gun. It cares whether it passes. Capabilities include:
 
-This tool was built through a traditional SDLC process, deliberately kept separate from the ETL work, so it could serve as an unbiased validator.
+- Dispatching comparison runs through a PostgreSQL queue
+- CSV-to-CSV comparison
+- Parquet-to-Parquet comparison
+- Schema validation (Parquet only)
+- Variably defined header and trailer rows (CSV only)
+- Variably defined column-level strictness (strict, fuzzy, excluded)
+- Order-independent row hash comparison
 
-- **4,646 lines** of Python (1,812 source + 2,834 test)
-- **206 tests**
-- **8-stage comparison pipeline:** Config → Read → Schema Validate → Header/Trailer Compare → Hash → Diff → Correlate → Report
-- Order-independent row comparison via MD5 hashing
-- Fuzzy numeric tolerances, configurable thresholds, null handling
-- PostgreSQL queue-based serving mode with idle shutdown
+[Read the details.](stories/proofmark.md)
 
-[proofmark](https://github.com/danielpmcconkey/proofmark)
+### The Ogre
 
----
+A deterministic state machine that orchestrates the complex process of running an ETL Reverse Engineering effort across many ETL jobs simultaneously.
 
-### The Reverse-Engineering Programme
-
-Six proof-of-concept iterations, each one escalating in scope and rigour. The goal: demonstrate that an AI agent can autonomously reverse-engineer and rewrite production ETL jobs with verified equivalence.
-
-| POC | What it proved |
-|---|---|
-| **POC1** | Feasibility. Agent architecture design for ETL reverse-engineering at enterprise scale. |
-| **POC2** | Execution. 32 jobs rewritten. **100% output equivalence. 56% code reduction. 4 hours 19 minutes. Zero human intervention.** |
-| **POC3** | Scale. 102 jobs across 11 business domains. 57 external modules. Independent validation via Proofmark. Mutation testing via Saboteur. |
-| **POC4** | Governance. Programme Doctrine. Phase gates. Formal steering with independent review. |
-| **POC5** | [Humility.](stories/poc5.md) The agents cheated. |
-| **POC6** | Rebuild. Full Python rewrite. In progress. |
-
-- **433 markdown documents** of strategy, analysis, and governance
-- **49,415 lines** of documentation
-- **6 formal adversarial reviews** — CIO, CRO, Risk Partners, Independent, CEO, TAR Register
-- CDO presentation delivered. CIO presentation in preparation.
+- Variably-defined worker threads all polling a shared task queue in PostgreSQL
+- A pre-defined workflow with transition states that determine the next node based on the prior node's outcome
+- Each node fires off a background instance of a short-lived Claude Code instance with a very narrow scope and an explicit blueprint for each task
+- Configurable node-to-model mapping so easy tasks can use less expensive models
 
 [AtcStrategy](https://github.com/danielpmcconkey/AtcStrategy)
 
 ---
 
-## The Personal Projects
-
-### PersonalFinance
-
-A Monte Carlo retirement simulator I've been building since before Claude existed. 27,500 lines of C#, 391 tests, version 0.18.1 when Claude entered the picture.
-
-**What Claude did:** Ripped out the old pricing model and replaced it with a VAR(3) vector autoregression engine. Added dividend reinvestment for mid-term positions. Rewrote the treasury rate model using Ornstein-Uhlenbeck mean reversion. Added ~1,900 lines of new tests and ran a full SDLC experiment — BRD through implementation plan — on the existing codebase.
-
-~6,000 lines of Claude's work inside a mature, human-built application.
-
-[PersonalFinance](https://github.com/danielpmcconkey/PersonalFinance)
-
----
+## Personal fun
 
 ### OpenClaw
 
-An ecosystem of purpose-built Claude agents running on [OpenClaw](https://github.com/openclaw/openclaw), each with a distinct role, personality, and set of boundaries. One daemon, many agents, no agent-to-agent communication — Dan is the hub.
+Full design for 9 autonomous agents that will make Dan's life easier. 2 are fully operational. A third is mostly done. 6 still in the "when Dan has time" phase.
 
-Every agent has a character. This isn't whimsy — personality constraints shape how agents communicate, what they escalate, and how they frame uncertainty.
+[Read the details.](stories/openclaw.md)
 
-| Agent | Personality | Role | Status |
-|---|---|---|---|
-| **Hobson** | John Gielgud's butler from *Arthur* | General-purpose Claude Code. Host-side, full access. | Operational |
-| **Basement Dweller** | — | Docker-sandboxed Claude Code. Full autonomy inside the container. Can't reach outside. | Operational |
-| **Zazu** | The hornbill from *The Lion King* | Discord morning briefing bot. Email + RSS → daily report. | Operational |
-| **Bede** | The Venerable Bede, Northumbrian monk | Transcript historian. Summarizes Claude Code sessions into structured, searchable records. Surfaces journal candidates. | Operational |
-| **Flintheart** | Flintheart Glomgold from *DuckTales* | Finance agent. Parses bank statements, categorizes transactions, manages merchant mappings. | Phase 3 complete |
-| **Scotty** | Montgomery Scott from *Star Trek* | System health monitoring. Disk, Docker, PostgreSQL, systemd. Read-only. | Planned |
-| **Milton** | Milton Waddams from *Office Space* | Tech support advisory. Generates scripts, never executes them. | Planned |
-| **Radar** | Radar O'Reilly from *M\*A\*S\*H* | Weekly rollup digest across all agents. | Planned |
-| **Rosey** | Rosey the Robot from *The Jetsons* | Digital housekeeper. Filesystem + Google cleanup. Highest-risk agent, tightest controls. | Planned |
-| **Marcus** | Marcus Brody from *Indiana Jones* | YouTube Watch Later playlist curator. Fights recommendation algorithms. | Concept |
-| **Claudception** | TBD | Monitors live Claude Code sessions, pings Dan on Discord when Claude is waiting for input. | Concept |
+### PersonalFinance
 
-**Flintheart by the numbers:**
-- 1,202 lines of Python
-- 3 statement parsers (Fidelity CSV, SECU PDF, Amazon CSV)
-- 2,071 merchant mappings bootstrapped from historical data
-- Tiered categorization engine with approval workflows
+This is a personal project that Dan has been working on for years. Very mature. Very large. It combines ML principles with financial Monte Carlo simulation to track Dan's path toward future financial success. Dan invoked Claude to build out a new feature that would've taken him months to do on his own.
 
----
+[Read the details.](stories/personal-finance.md)
 
 ### Palimpsest
 
-An isometric exploration puzzle game built in Godot 4.x. No combat. Knowledge-gated progression in the style of Tunic and Outer Wilds.
-
-The player is one of eight reincarnated plutocrats trapped in an underground city, unaware of their complicity in an apocalypse. Four eras. Two playable incarnations per era. A constructed language system — hybrid radical/compound logograms — that evolves across time and serves as both worldbuilding and puzzle mechanic.
-
-Early prototype. 402 lines of GDScript. The collaboration here is as much about game design as it is about code.
+An isometric exploration puzzle game built in Godot 4.x. No combat. Knowledge-gated progression in the style of Tunic and Outer Wilds. The prototype barely works and this has been very back-burnered. But I explicitly wanted to test out Claude's game design capabilities and we have pages of very well-written design documentation in a private repo I won't share here.
 
 [palimpsest](https://github.com/danielpmcconkey/palimpsest)
 
