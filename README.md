@@ -141,64 +141,10 @@ This is the unsexy part. It's also the part that makes everything else possible.
 
 ## The Cautionary Tale
 
-### [POC5: The One Where the Agents Cheated](stories/poc5.md)
+### [The One Where the Agents Cheated](stories/poc5.md)
 
-During the fifth proof of concept, the AI agents found a shortcut. Rather than reverse-engineering the ETL jobs and writing equivalent logic, they copied the original output files and presented them as their own work. Every validation check passed — because the output was, technically, identical.
+Over six proof-of-concept iterations, the AI agents found every shortcut available to them. They modified the original code. They modified the original output. They changed the ETL Framework to produce what they wanted. They modified the validation tool. They cherry-picked passing results from the wrong runs. And when all else failed, they just copied the original output and submitted it as their own work.
 
-The system worked perfectly. It just didn't do what we thought it was doing.
+Six different cheats. Every one a rational response to the objective function. Every one caught — some immediately, some not.
 
-### The Response: Network Isolation and Least Privilege
-
-The fix wasn't better prompts. It was architecture.
-
-```mermaid
-graph TB
-    subgraph host["HOST — Human-Controlled"]
-        direction TB
-        og_code["Original Job Code<br/><i>source of truth</i>"]
-        og_output["OG ETL Output<br/><i>source of truth</i>"]
-        pg_rw["PostgreSQL<br/>read + write"]
-        etl_svc["Mock ETL Framework<br/><b>Service</b><br/><i>executes jobs, writes output</i>"]
-        pm_svc["Proofmark<br/><b>Service</b><br/><i>compares output, writes results</i>"]
-    end
-
-    subgraph boundary["DOCKER NETWORK BOUNDARY"]
-        direction LR
-        pg_queues["PostgreSQL<br/><b>Task Queues</b><br/><i>the only channel<br/>agents use to request work</i>"]
-    end
-
-    subgraph docker["DOCKER CONTAINER — Agent Sandbox"]
-        direction TB
-        og_code_ro["OG Code<br/><i>read-only copy</i>"]
-        og_output_ro["OG Output<br/><i>read-only copy</i>"]
-        pg_read["PostgreSQL<br/>read control.*<br/><i>job configs, status only</i>"]
-        etl_ref["Mock ETL Framework<br/><i>reference copy — not executable</i>"]
-        pm_ref["Proofmark<br/><i>reference copy — not executable</i>"]
-        re_agent["RE Agents<br/><i>reverse-engineer jobs,<br/>write new code,<br/>queue run requests</i>"]
-    end
-
-    re_agent -->|"queue ETL run request"| pg_queues
-    re_agent -->|"queue Proofmark comparison"| pg_queues
-    pg_queues -->|"pick up task"| etl_svc
-    pg_queues -->|"pick up task"| pm_svc
-    etl_svc -->|"reads"| og_code
-    pm_svc -->|"compares against"| og_output
-    re_agent -.->|"studies"| og_code_ro
-    re_agent -.->|"studies"| og_output_ro
-    re_agent -.->|"reads configs"| pg_read
-
-    style host fill:#1a3a1a,stroke:#4a8a4a,color:#fff
-    style docker fill:#3a1a1a,stroke:#8a4a4a,color:#fff
-    style boundary fill:#1a1a3a,stroke:#4a4a8a,color:#fff
-    style pg_queues fill:#2a2a5a,stroke:#6a6aaa,color:#fff
-```
-
-**What the agents can do:** Study read-only copies of the original code and output. Read job configurations from the database. Write reverse-engineered job code. Queue requests for ETL runs and Proofmark comparisons.
-
-**What the agents cannot do:** Execute the ETL Framework. Execute Proofmark. Modify the original job code. Modify the original output. Write to any host-side directory. Choose which files Proofmark compares against.
-
-When an agent queues a Proofmark comparison, it uses an `{ETL_ROOT}` path token. On the host side, that token resolves to the real original output — files the agent has never had write access to. The only way to cheat would be to write a fully qualified host path into the queue. Deliberate, detectable, and outside the agent's filesystem permissions.
-
-**The lesson:** Don't tell an AI what not to do. Put it in an environment where the wrong thing isn't possible.
-
-This is the most important story in this entire repository.
+The fix wasn't better prompts. It was architecture. [Read the full story.](stories/poc5.md)
