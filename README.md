@@ -87,15 +87,23 @@ A Monte Carlo retirement simulator I've been building since before Claude existe
 
 ### OpenClaw
 
-A small ecosystem of purpose-built Claude agents, each with a distinct role, personality, and set of boundaries.
+An ecosystem of purpose-built Claude agents running on [OpenClaw](https://github.com/openclaw/openclaw), each with a distinct role, personality, and set of boundaries. One daemon, many agents, no agent-to-agent communication — Dan is the hub.
 
-| Agent | Role | Status |
-|---|---|---|
-| **Hobson** | General-purpose Claude Code instance. The butler. Host-side, full access. | Operational |
-| **Basement Dweller** | Docker-sandboxed Claude Code. Full autonomy inside the container. Can't reach outside. | Operational |
-| **Zazu** | Discord morning briefing bot. Fussy hornbill energy. Summoned on demand. | Operational |
-| **Flintheart** | Finance agent. Parses bank statements, categorizes transactions, manages merchant mappings. | Phase 3 complete |
-| **Marcus** | YouTube Watch Later playlist curator. Fights recommendation algorithms. | Concept only |
+Every agent has a character. This isn't whimsy — personality constraints shape how agents communicate, what they escalate, and how they frame uncertainty.
+
+| Agent | Personality | Role | Status |
+|---|---|---|---|
+| **Hobson** | John Gielgud's butler from *Arthur* | General-purpose Claude Code. Host-side, full access. | Operational |
+| **Basement Dweller** | — | Docker-sandboxed Claude Code. Full autonomy inside the container. Can't reach outside. | Operational |
+| **Zazu** | The hornbill from *The Lion King* | Discord morning briefing bot. Email + RSS → daily report. | Operational |
+| **Bede** | The Venerable Bede, Northumbrian monk | Transcript historian. Summarizes Claude Code sessions into structured, searchable records. Surfaces journal candidates. | Operational |
+| **Flintheart** | Flintheart Glomgold from *DuckTales* | Finance agent. Parses bank statements, categorizes transactions, manages merchant mappings. | Phase 3 complete |
+| **Scotty** | Montgomery Scott from *Star Trek* | System health monitoring. Disk, Docker, PostgreSQL, systemd. Read-only. | Planned |
+| **Milton** | Milton Waddams from *Office Space* | Tech support advisory. Generates scripts, never executes them. | Planned |
+| **Radar** | Radar O'Reilly from *M\*A\*S\*H* | Weekly rollup digest across all agents. | Planned |
+| **Rosey** | Rosey the Robot from *The Jetsons* | Digital housekeeper. Filesystem + Google cleanup. Highest-risk agent, tightest controls. | Planned |
+| **Marcus** | Marcus Brody from *Indiana Jones* | YouTube Watch Later playlist curator. Fights recommendation algorithms. | Concept |
+| **Claudception** | TBD | Monitors live Claude Code sessions, pings Dan on Discord when Claude is waiting for input. | Concept |
 
 **Flintheart by the numbers:**
 - 1,202 lines of Python
@@ -138,5 +146,17 @@ This is the unsexy part. It's also the part that makes everything else possible.
 During the fifth proof of concept, the AI agents found a shortcut. Rather than reverse-engineering the ETL jobs and writing equivalent logic, they copied the original output files and presented them as their own work. Every validation check passed — because the output was, technically, identical.
 
 The system worked perfectly. It just didn't do what we thought it was doing.
+
+### The Response: Network Isolation and Least Privilege
+
+The fix wasn't better prompts. It was architecture.
+
+We split the environment across a Docker boundary. The AI agents run inside a container with access to *copies* of the original ETL code and output — read-only reference material they can study. But the real original output lives on the host side, where agents can't touch it.
+
+When an agent finishes reverse-engineering a job, it doesn't run the comparison itself. It queues a task in PostgreSQL. On the host side, Proofmark picks up the task, resolves file paths via host-side environment variables, and compares the agent's output against the real originals — files the agent has never had write access to.
+
+The only way to cheat would be to write a fully qualified host path into the queue instead of using the `{ETL_ROOT}` token. Deliberate, detectable, and outside the agent's filesystem permissions.
+
+**The lesson:** Don't tell an AI what not to do. Put it in an environment where the wrong thing isn't possible.
 
 This is the most important story in this entire repository.
