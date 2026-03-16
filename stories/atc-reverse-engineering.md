@@ -13,7 +13,4 @@ Six proof-of-concept iterations, each one escalating in scope and rigour. The go
 
 - **433 markdown documents** of strategy, analysis, and governance
 - **49,415 lines** of documentation
-- **6 formal adversarial reviews** — CIO, CRO, Risk Partners, Independent, CEO, TAR Register
-- CDO presentation delivered. CIO presentation in preparation.
-
 [AtcStrategy](https://github.com/danielpmcconkey/AtcStrategy)

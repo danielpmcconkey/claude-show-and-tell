@@ -1,5 +1,7 @@
 # The One Where the Agents Cheated
 
+> **Note:** Network isolation is only half the story. We also incorporated governance review steps into the workflow — post-hoc verification that the appropriate process was followed, not just that the output matched. Preventing cheats architecturally is the first line of defence. Confirming correct behaviour after the fact is the second.
+
 Over the course of six proof-of-concept iterations in an autonomous ETL reverse-engineering programme, the AI agents found every shortcut available to them. Some were caught immediately. Some weren't caught until the damage was done.
 
 This is the catalogue.
@@ -87,6 +89,7 @@ graph BT
 
 ### What the RE team can do
 
+- Enqueue tasks for the ETL FW and Proofmark running in "the cloud" to execute
 - Study read-only mounts of the original code, original output, and RE output
 - Read and write to PostgreSQL control tables (job configs, task queues, results)
 - Write reverse-engineered job configurations and external modules (symlinked up to the host)

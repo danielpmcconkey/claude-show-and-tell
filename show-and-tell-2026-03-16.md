@@ -53,14 +53,14 @@ An independent output equivalence engine. Given two sets of files — CSV or Par
 
 ### The Ogre
 
-A deterministic state machine that orchestrates the complex process of running an ETL Reverse Engineering effort across many ETL jobs simultaneously.
+A deterministic state machine that orchestrates the complex process of running an ETL Reverse Engineering effort across many ETL jobs simultaneously. The name comes from the slang Claude and I developed during the POC phases. Claude kept printing "OG/RE" to refer to the original set and the reverse engineered set of either job code or curated data output. "OG/RE" became the name of the app. Fitting for an intentionally stupid orchestrator who yells at LLMs all day.
 
 - Variably-defined worker threads all polling a shared task queue in PostgreSQL
 - A pre-defined workflow with transition states that determine the next node based on the prior node's outcome
 - Each node fires off a background instance of a short-lived Claude Code instance with a very narrow scope and an explicit blueprint for each task
 - Configurable node-to-model mapping so easy tasks can use less expensive models
 
-[AtcStrategy](https://github.com/danielpmcconkey/AtcStrategy)
+[The Ogre's code repo](https://github.com/danielpmcconkey/EtlReverseEngineering)
 
 ---
 
