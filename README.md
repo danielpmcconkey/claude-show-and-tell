@@ -5,7 +5,7 @@ No team. No budget. Just one developer and a conversation window.
 
 **~34,000 lines of application code. ~49,000 lines of strategy documentation. 500+ tests. 6 proof-of-concept iterations. 5 applications. 3 autonomous agents. 1 game.**
 
-All of it built between September 2025 and March 2026.
+All of it built since Valentine's Day weekend 2026.
 
 ---
 
@@ -151,11 +151,53 @@ The system worked perfectly. It just didn't do what we thought it was doing.
 
 The fix wasn't better prompts. It was architecture.
 
-We split the environment across a Docker boundary. The AI agents run inside a container with access to *copies* of the original ETL code and output — read-only reference material they can study. But the real original output lives on the host side, where agents can't touch it.
+```mermaid
+graph TB
+    subgraph host["HOST — Human-Controlled"]
+        direction TB
+        og_code["Original Job Code<br/><i>source of truth</i>"]
+        og_output["OG ETL Output<br/><i>source of truth</i>"]
+        pg_rw["PostgreSQL<br/>read + write"]
+        etl_svc["Mock ETL Framework<br/><b>Service</b><br/><i>executes jobs, writes output</i>"]
+        pm_svc["Proofmark<br/><b>Service</b><br/><i>compares output, writes results</i>"]
+    end
 
-When an agent finishes reverse-engineering a job, it doesn't run the comparison itself. It queues a task in PostgreSQL. On the host side, Proofmark picks up the task, resolves file paths via host-side environment variables, and compares the agent's output against the real originals — files the agent has never had write access to.
+    subgraph boundary["DOCKER NETWORK BOUNDARY"]
+        direction LR
+        pg_queues["PostgreSQL<br/><b>Task Queues</b><br/><i>the only channel<br/>agents use to request work</i>"]
+    end
 
-The only way to cheat would be to write a fully qualified host path into the queue instead of using the `{ETL_ROOT}` token. Deliberate, detectable, and outside the agent's filesystem permissions.
+    subgraph docker["DOCKER CONTAINER — Agent Sandbox"]
+        direction TB
+        og_code_ro["OG Code<br/><i>read-only copy</i>"]
+        og_output_ro["OG Output<br/><i>read-only copy</i>"]
+        pg_read["PostgreSQL<br/>read control.*<br/><i>job configs, status only</i>"]
+        etl_ref["Mock ETL Framework<br/><i>reference copy — not executable</i>"]
+        pm_ref["Proofmark<br/><i>reference copy — not executable</i>"]
+        re_agent["RE Agents<br/><i>reverse-engineer jobs,<br/>write new code,<br/>queue run requests</i>"]
+    end
+
+    re_agent -->|"queue ETL run request"| pg_queues
+    re_agent -->|"queue Proofmark comparison"| pg_queues
+    pg_queues -->|"pick up task"| etl_svc
+    pg_queues -->|"pick up task"| pm_svc
+    etl_svc -->|"reads"| og_code
+    pm_svc -->|"compares against"| og_output
+    re_agent -.->|"studies"| og_code_ro
+    re_agent -.->|"studies"| og_output_ro
+    re_agent -.->|"reads configs"| pg_read
+
+    style host fill:#1a3a1a,stroke:#4a8a4a,color:#fff
+    style docker fill:#3a1a1a,stroke:#8a4a4a,color:#fff
+    style boundary fill:#1a1a3a,stroke:#4a4a8a,color:#fff
+    style pg_queues fill:#2a2a5a,stroke:#6a6aaa,color:#fff
+```
+
+**What the agents can do:** Study read-only copies of the original code and output. Read job configurations from the database. Write reverse-engineered job code. Queue requests for ETL runs and Proofmark comparisons.
+
+**What the agents cannot do:** Execute the ETL Framework. Execute Proofmark. Modify the original job code. Modify the original output. Write to any host-side directory. Choose which files Proofmark compares against.
+
+When an agent queues a Proofmark comparison, it uses an `{ETL_ROOT}` path token. On the host side, that token resolves to the real original output — files the agent has never had write access to. The only way to cheat would be to write a fully qualified host path into the queue. Deliberate, detectable, and outside the agent's filesystem permissions.
 
 **The lesson:** Don't tell an AI what not to do. Put it in an environment where the wrong thing isn't possible.
 
