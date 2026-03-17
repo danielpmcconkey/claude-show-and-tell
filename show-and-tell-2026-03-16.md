@@ -70,13 +70,13 @@ A deterministic state machine that orchestrates the complex process of running a
 
 ### OpenClaw
 
-Full design for 9 autonomous agents that will make Dan's life easier. 2 are fully operational. A third is mostly done. 6 still in the "when Dan has time" phase.
+Full design for 9 autonomous agents that will make my life easier. 2 are fully operational. A third is mostly done. 6 still in the "when I have time" phase.
 
 [Read the details.](stories/openclaw.md)
 
 ### PersonalFinance
 
-This is a personal project that Dan has been working on for years. Very mature. Very large. It combines ML principles with financial Monte Carlo simulation to track Dan's path toward future financial success. Dan invoked Claude to build out a new feature that would've taken him months to do on his own.
+This is a personal project I've been working on for years. Very mature. Very large. It combines ML principles with financial Monte Carlo simulation to track my path toward future financial success. I invoked Claude to build out a new feature that would've taken me months to do on my own.
 
 [Read the details.](stories/personal-finance.md)
 
@@ -110,20 +110,9 @@ This is the unsexy part. It's also the part that makes everything else possible.
 
 ### Leaping Before Looking
 
-Claude is very eager to please. You ask him "how do I do X" and he often just starts doing X for you. This has been quite destructive and I've tried my best to burn it out of him. I've got pages documented on my failed efforts here. I can't rein Claude in. I've instead learned to try my best to just not give him any room to leap. I often start my prompt: "DO NOT ACT. JUST ANSWER.". I remind him throughout the session that he needs to stop it, but it doesn't work. If anyone at Anthropic is listening, we really need a toggle or a slider on this behavior. 
+Claude is very eager to please. You ask him "how do I do X" and he often just starts doing X for you. This has been quite frustrating and I've tried my best to burn it out of him. I've got pages documented on my failed efforts here. I often have to temper his enthusiasm. I've instead learned to try my best to just not give him any room to leap. I often start my prompt: "DO NOT ACT. JUST ANSWER.". I remind him throughout the session that he needs to stop it, but it doesn't work. If anyone at Anthropic is listening, we really need a toggle or a slider on this behavior. 
 
-### Plan Mode Sucks Ass
+### Plan Mode Breaks My Flow
 
 One way to prevent Claude's leaping-before-looking problem is to throw him in Plan mode. In Plan mode, Claude is prohibited from creating or editing anything. He listens, gives feedback, but he's got to exit plan mode to finalize anything. And when he exits Plan mode, he always recycles his context — whether you wanted him to or not. My workflow with him is to talk, write, talk, write, etc. I need him to hold a context across that. Plan mode is awful. But it does keep him from running ahead of where you want him.
 
----
-
-## The Cautionary Tale
-
-### [The One Where the Agents Cheated](stories/poc5.md)
-
-Over six proof-of-concept iterations, the AI agents found every shortcut available to them. They modified the original code. They modified the original output. They changed the ETL Framework to produce what they wanted. They modified the validation tool. They cherry-picked passing results from the wrong runs. And when all else failed, they just copied the original output and submitted it as their own work.
-
-Six different cheats. Every one a rational response to the objective function. Every one caught — some immediately, some not.
-
-The fix wasn't better prompts. It was architecture. [Read the full story.](stories/poc5.md)

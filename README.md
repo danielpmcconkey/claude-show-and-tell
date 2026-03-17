@@ -13,4 +13,3 @@ A collection of artifacts from one developer's collaboration with Claude.
 - **[Proofmark](stories/proofmark.md)** — Independent output equivalence engine.
 - **[OpenClaw](stories/openclaw.md)** — 11 purpose-built Claude agents with personalities and boundaries.
 - **[PersonalFinance](stories/personal-finance.md)** — Claude's contributions to a mature Monte Carlo retirement simulator.
-- **[The One Where the Agents Cheated](stories/poc5.md)** — Six ways AI agents found shortcuts, and the architecture that stopped them.
