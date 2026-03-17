@@ -88,7 +88,7 @@ An isometric exploration puzzle game built in Godot 4.x. No combat. Knowledge-ga
 
 ---
 
-## The Meta (you helping the LLM to help you help it)
+## The Meta (let the LLM help you to help it to help you better)
 
 We often see rather reputable senior members of the programming/development discipline describing AI-generated slop code. What they're describing is real. AI is often cited as a force-multiplier, but you really should start thinking about it as a garbage-in-garbage-out multiplier. The meta that holds this entire body of work together is me making a deliberate effort to improve my use of these tools. 
 
