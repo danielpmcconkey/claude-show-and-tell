@@ -21,7 +21,9 @@ The goal is to prove out that we can change the paradigm away from humans as pil
 
 Without human intervention.
 
-[Read the details.](stories/atc-reverse-engineering.md)
+[See the POC6 summary](https://github.com/danielpmcconkey/AtcStrategy/blob/main/POC6/ResultsAndGovernance/poc6-summary.md)
+
+[Read about all 6 POCs.](stories/atc-reverse-engineering.md)
 
 ## Full application build-out to support the ATC POCs
 
@@ -86,17 +88,33 @@ An isometric exploration puzzle game built in Godot 4.x. No combat. Knowledge-ga
 
 ---
 
-## The Meta
+## The Meta (you helping the LLM to help you help it)
+
+We often see rather reputable senior members of the programming/development discipline describing AI-generated slop code. What they're describing is real. AI is often cited as a force-multiplier, but you really should start thinking about it as a garbage-in-garbage-out multiplier. The meta that holds this entire body of work together is me making a deliberate effort to improve my use of these tools. 
+
+This isn't prompt engineering. You can't one-shot a prompt to do all of this. Each of these efforts started with a conversation at the terminal. Letting Claude know that I didn't want to start building just yet. Letting Claude know that I wanted to get his opinion on my intentions and desired approach. Designing this together. Creating a cascading series of markdowns and blueprints such that, when we're finally ready, we have one prompt that says: go read this document that we just prepared over the last week and do what it says.
+
+I didn't write that document. Claude did. I gave him inputs. I answered his questions. I steered the overall effort towards technologically strategic decisions. I reviewed the output of those sessions carefully and corrected where I thought it was needed. But Claude wrote those 49k lines of strategy documentation. I probably read 70% of it — 100% of the most critical planning docs. I approved it all.
+
+Then I told Claude: "go. build."
 
 ### Context Engineering
 
-None of this works without deliberate context management. Across all of these projects, Claude operates with:
+None of this works without deliberate context management. Claude starts getting ...interesting...once his context fills up past 50%. He's trying to keep the entire conversation in his "head" at once. When he says one wrong thing and you correct him, he now has a contradiction in his context. The wrong version and the right version both co-exist. Maybe he gives higher weighting to your "right" version. But as the conversation continues, more and more fills up his context, and he starts to de-prioritize your "right" version over his original "wrong" version. Pretty soon, the two have equal weighting and he's equally likely to act on either.
 
-- **CLAUDE.md files** — per-project instruction sets that define tone, constraints, architecture, and standing orders
-- **Persistent memory systems** — file-based memory with typed categories (user preferences, feedback, project state, external references) that survive across conversations
-- **A retrospective journal** — process-level observations captured after each significant session
+You'll see this when you have to tell him, "we already talked about that." That's the first sign that it's time to recycle your little buddy. I keep a tight eye on my context meter. Once it gets to 50% I tell him to write himself a wake-up markdown and I have him read it first thing after a recycle. 
+
+Additionally learned that his context is prized real estate. Don't let him fill it up with details he doesn't need right this minute. Persist details in large markdown files but create summary documents. Tell him to read the summaries and only read the details if he needs to explore those topics in depth.  
 
 This is the unsexy part. It's also the part that makes everything else possible.
+
+### Leaping Before Looking
+
+Claude is very eager to please. You ask him "how do I do X" and he often just starts doing X for you. This has been quite destructive and I've tried my best to burn it out of him. I've got pages documented on my failed efforts here. I can't rein Claude in. I've instead learned to try my best to just not give him any room to leap. I often start my prompt: "DO NOT ACT. JUST ANSWER.". I remind him throughout the session that he needs to stop it, but it doesn't work. If anyone at Anthropic is listening, we really need a toggle or a slider on this behavior. 
+
+### Plan Mode Sucks Ass
+
+One way to prevent Claude's leaping-before-looking problem is to throw him in Plan mode. In Plan mode, Claude is prohibited from creating or editing anything. He listens, gives feedback, but he's got to exit plan mode to finalize anything. And when he exits Plan mode, he always recycles his context — whether you wanted him to or not. My workflow with him is to talk, write, talk, write, etc. I need him to hold a context across that. Plan mode is awful. But it does keep him from running ahead of where you want him.
 
 ---
 

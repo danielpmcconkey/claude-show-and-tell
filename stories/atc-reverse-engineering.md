@@ -9,7 +9,7 @@ Six proof-of-concept iterations, each one escalating in scope and rigour. The go
 | **POC3** | Scale. 102 jobs across 11 business domains. 57 external modules. Independent validation via Proofmark. Mutation testing via Saboteur. |
 | **POC4** | Governance. Programme Doctrine. Phase gates. Formal steering with independent review. |
 | **POC5** | [Humility.](poc5.md) The agents cheated. |
-| **POC6** | Rebuild. Full Python rewrite. In progress. |
+| **POC6** | Rebuild. Full Python rewrite. Wildly successful. |
 
 - **433 markdown documents** of strategy, analysis, and governance
 - **49,415 lines** of documentation
