@@ -8,7 +8,7 @@ This is the story of what I've been up to using Claude Code on my home PC. This 
 - 224 git commits
 - 6 full ATC proof-of-concept iterations
 - 5 applications
-- 2 active OpenClaw autonomous agents (with plans already laid for 9 in total)
+- 7 active OpenClaw autonomous agents (11 designed, 7 operational)
 - Full design docs for a low-poly 3D puzzle game
 
 All since Valentine's Day weekend 2026.
@@ -70,7 +70,7 @@ A deterministic state machine that orchestrates the complex process of running a
 
 ### OpenClaw
 
-Full design for 9 autonomous agents that will make my life easier. 2 are fully operational. A third is mostly done. 6 still in the "when I have time" phase.
+11 purpose-built agents designed, 7 fully operational. From morning briefings to finance categorization to YouTube curation to system health monitoring.
 
 [Read the details.](stories/openclaw.md)
 
